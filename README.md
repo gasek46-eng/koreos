@@ -23,9 +23,12 @@ Kora OS — сборка на основе Ubuntu 24.04 с собственно�
 - **Интерфейс:** верхняя строка (сеть, звук, яркость, батарея, часы), док с увеличением иконок при наведении.
 - **6 тем оформления:** Ночь, День, Океан, Лес, Закат, Графит — меню ⚙ → «Темы оформления».
 - **Яркость экрана:** ползунок (⚙ или клик по ☀), клавиши яркости и громкости на ноутбуке.
+- **Удобный Wi-Fi:** список сетей и ввод пароля по клику на значок сети.
+- **Экран блокировки** (Win+L и автоматически), **скриншоты** (Print / Shift+Print), **ночной режим**, ползунок громкости, раскладка окон Win+стрелки.
+- **Оформление:** заголовки окон и терминал в цвет темы, тема Materia, курсор Breeze, сглаживание шрифтов.
 - **Драйверы Wi-Fi / Bluetooth / графики** для Intel, Realtek, Qualcomm, MediaTek, Broadcom, AMD.
 - **Экран входа** с логотипом и паролем (LightDM).
-- **Приложения:** файлы, LibreOffice, Tor Browser, терминал. LibreWolf, Telegram и Zoom устанавливаются при первом запуске из дока.
+- **Приложения:** файлы, LibreOffice, Tor Browser, терминал, просмотр PDF и фото, видеоплеер (с аппаратным ускорением), калькулятор, архиватор. LibreWolf, Telegram и Zoom устанавливаются при первом запуске из дока.
 - **Русский язык** по умолчанию, раскладка EN/RU — Alt+Shift, московское время.
 - **Меню настроек** (⚙): Wi-Fi, звук, экран, Bluetooth, яркость, обои, тема, выключение.
 - **Установщик на диск** (Calamares) на русском — кнопка установки в доке.
@@ -48,7 +51,7 @@ Kora OS — сборка на основе Ubuntu 24.04 с собственно�
 - 2 ГБ ОЗУ (рекомендуется 4 ГБ), 16 ГБ на диске для установки.
 
 ### Сборка из исходников
-Скрипты в папке [`build/`](build): `build-iso.sh` → `brand.sh` → `improve.sh` → `v03.sh` → `v031.sh` → `v032.sh` (`mkiso.sh` — сборка загрузочного образа). Нужен Ubuntu/Debian с правами root. Пути в скриптах пока жёстко заданы (`/home/claude/...`) — поправьте под себя.
+Скрипты в папке [`build/`](build): `build-iso.sh` → `brand.sh` → `improve.sh` → `v03.sh` → `v031.sh` → `v032.sh` → `v033.sh` → `v034.sh` (`mkiso.sh` — сборка загрузочного образа). Нужен Ubuntu/Debian с правами root. Пути в скриптах пока жёстко заданы (`/home/claude/...`) — поправьте под себя.
 
 ### Статус
 Ранний прототип. Известные ограничения: нет анимаций окон и индикатора раскладки в верхней строке; установка на диск проверена ограниченно.
@@ -67,9 +70,12 @@ Kora OS is an Ubuntu 24.04–based distribution with its own shell: a top menu b
 - **Interface:** top bar (network, sound, brightness, battery, clock), dock with hover magnification.
 - **6 themes:** Night, Day, Ocean, Forest, Sunset, Graphite — ⚙ menu → Themes.
 - **Screen brightness** slider (⚙ or click ☀), laptop brightness and volume keys.
+- **Easy Wi-Fi:** network list and password prompt from the top bar.
+- **Lock screen** (Super+L and on idle), **screenshots** (Print / Shift+Print), **night light**, volume slider, Super+arrow window snapping.
+- **Look:** window titlebars and terminal follow the theme, Materia GTK theme, Breeze cursor, tuned font rendering.
 - **Wi-Fi / Bluetooth / GPU firmware** for Intel, Realtek, Qualcomm, MediaTek, Broadcom, AMD.
 - **Login screen** with logo and password (LightDM).
-- **Apps:** file manager, LibreOffice, Tor Browser, terminal. LibreWolf, Telegram and Zoom install on first launch from the dock.
+- **Apps:** file manager, LibreOffice, Tor Browser, terminal, PDF and image viewers, video player (hardware decoding), calculator, archive manager. LibreWolf, Telegram and Zoom install on first launch from the dock.
 - **Russian by default**; EN/RU layout switch with Alt+Shift; Moscow time zone (changeable in the installer).
 - **Settings menu** (⚙): Wi-Fi, sound, display, Bluetooth, brightness, wallpaper, theme, power.
 - **Disk installer** (Calamares) — install button in the dock.
@@ -92,7 +98,7 @@ Live user: `kora`, password `kora`.
 - 2 GB RAM (4 GB recommended), 16 GB disk for installation.
 
 ### Building from source
-Scripts are in [`build/`](build): `build-iso.sh` → `brand.sh` → `improve.sh` → `v03.sh` → `v031.sh` → `v032.sh` (`mkiso.sh` builds the bootable hybrid image). Requires Ubuntu/Debian and root. Paths are currently hard-coded (`/home/claude/...`) — adjust them for your machine.
+Scripts are in [`build/`](build): `build-iso.sh` → `brand.sh` → `improve.sh` → `v03.sh` → `v031.sh` → `v032.sh` → `v033.sh` → `v034.sh` (`mkiso.sh` builds the bootable hybrid image). Requires Ubuntu/Debian and root. Paths are currently hard-coded (`/home/claude/...`) — adjust them for your machine.
 
 ### Status
 Early prototype. Known limitations: no window animations or keyboard-layout indicator in the top bar yet; disk installation has had limited testing.
