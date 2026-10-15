@@ -68,6 +68,12 @@ Kora OS — система на основе Ubuntu 24.04 с собственн�
 ### Скачать
 В разделе **[Releases](../../releases/latest)**: файл `kora-os-0.3.1.iso` и его контрольная сумма `.sha256`.
 
+### Kora поверх вашей Ubuntu (без флешки)
+На Ubuntu 26.04 выполните в терминале — на экране входа появится сеанс «Kora», прежний рабочий стол останется:
+```
+curl -fsSL https://raw.githubusercontent.com/gasek46-eng/koreos/main/install.sh | bash
+```
+
 ### Запуск с флешки
 1. Запишите образ на флешку от 4 ГБ.
    - **Windows — Rufus:** выберите ISO, нажмите «СТАРТ» и обязательно выберите режим **«DD-образ»**.
@@ -98,6 +104,9 @@ Kora OS — система на основе Ubuntu 24.04 с собственн�
 - Установка на диск проверена ограниченно.
 
 ### Сборка из исходников
+Всё собирается одной командой: `sudo build/kora-build.sh` (Ubuntu 26.04 внутри, Ubuntu/Debian снаружи). Новый тег `v*` на GitHub автоматически собирает образ и публикует релиз (GitHub Actions).
+
+<!-- legacy -->
 Скрипты лежат в папке [`build/`](build) и запускаются по порядку: `build-iso.sh` → `brand.sh` → `improve.sh` → `v03.sh` → `v031.sh` → `v032.sh` → `v033.sh` → `v034.sh`. Загрузочный образ собирает `mkiso.sh`. Нужен Ubuntu или Debian и права root. Пути в скриптах пока жёстко заданы (`/home/claude/...`) — поправьте их под себя.
 
 ### История версий
@@ -157,6 +166,12 @@ Kora OS is an Ubuntu 24.04–based system with its own shell: a top menu bar, an
 ### Download
 From **[Releases](../../releases/latest)**: `kora-os-0.3.1.iso` plus its `.sha256` checksum.
 
+### Kora on top of your Ubuntu (no USB needed)
+On Ubuntu 26.04 run this in a terminal — a "Kora" session appears on the login screen, your current desktop stays:
+```
+curl -fsSL https://raw.githubusercontent.com/gasek46-eng/koreos/main/install.sh | bash
+```
+
 ### Running from USB
 1. Write the image to a USB stick (4 GB+).
    - **Windows — Rufus:** pick the ISO, press START and choose **"DD Image" mode**.
@@ -187,6 +202,9 @@ The live session logs in automatically. If you're asked for a password, press En
 - Disk installation has had limited testing.
 
 ### Building from source
+One command builds everything: `sudo build/kora-build.sh` (Ubuntu 26.04 inside, Ubuntu/Debian host). Pushing a `v*` tag builds the ISO and publishes a release automatically (GitHub Actions).
+
+<!-- legacy -->
 Scripts live in [`build/`](build) and run in order: `build-iso.sh` → `brand.sh` → `improve.sh` → `v03.sh` → `v031.sh` → `v032.sh` → `v033.sh` → `v034.sh`. `mkiso.sh` builds the bootable image. Requires Ubuntu or Debian and root. Paths are currently hard-coded (`/home/claude/...`) — adjust them for your machine.
 
 ### Changelog

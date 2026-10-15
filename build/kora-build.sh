@@ -3,7 +3,7 @@
 #   sudo ./kora-build.sh [output.iso]
 # Needs: Ubuntu/Debian host with debootstrap squashfs-tools xorriso grub-pc-bin grub-efi-amd64-bin mtools dosfstools
 set -euo pipefail
-VERSION=0.4
+VERSION=${KORA_VERSION:-0.4}
 HERE=$(cd "$(dirname "$0")" && pwd)
 WORK=${WORK:-/var/tmp/kora-build}
 OUT=${1:-$PWD/kora-os-$VERSION.iso}
