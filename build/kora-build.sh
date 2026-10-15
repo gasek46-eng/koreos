@@ -50,13 +50,15 @@ deb $MIRROR $SUITE-updates main restricted universe multiverse
 deb http://security.ubuntu.com/ubuntu $SUITE-security main restricted universe multiverse
 EOF
 rm -f $R/etc/apt/sources.list.d/*.sources 2>/dev/null || true
+echo 'Acquire::Retries "10";' > $R/etc/apt/apt.conf.d/80retries
 mounts
 
 log "2/6 Packages"
 chroot $R bash -euo pipefail -c "
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y --no-install-recommends ${PKGS[*]}
+for i in 1 2 3 4; do apt-get install -y --no-install-recommends ${PKGS[*]} && break; echo retry \$i; sleep 20; apt-get update || true; done
+dpkg -s hyprland labwc casper >/dev/null
 for p in ${OPTIONAL[*]}; do apt-get install -y --no-install-recommends \$p || true; done
 "
 
