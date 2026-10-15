@@ -1,0 +1,1 @@
+DPkg::Pre-Invoke {"[ \"$(findmnt -no FSTYPE /)\" = btrfs ] && command -v timeshift >/dev/null && timeshift --create --comments \"перед установкой программ\" --tags O --scripted >/dev/null 2>&1 || true";};

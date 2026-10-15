@@ -112,6 +112,7 @@ class Settings(Adw.Application):
         for name, title, icon, fn in [('wifi', 'Wi-Fi', 'network-wireless-symbolic', self.p_wifi), ('sound', 'Звук', 'audio-volume-high-symbolic', self.p_sound),
                                       ('display', 'Экран', 'video-display-symbolic', self.p_display), ('look', 'Оформление', 'preferences-desktop-appearance-symbolic', self.p_look),
                                       ('power', 'Питание', 'battery-good-symbolic', self.p_power), ('apps', 'Приложения', 'system-software-install-symbolic', self.p_apps),
+                                      ('snap', 'Снимки и откат', 'document-open-recent-symbolic', self.p_snap), ('usb', 'Kora на флешке', 'drive-removable-media-symbolic', self.p_usb),
                                       ('doctor', 'Kora Доктор', 'emblem-ok-symbolic', self.p_doctor), ('about', 'О системе', 'help-about-symbolic', self.p_about)]:
             page = Adw.PreferencesPage(); fn(page); self.stack.add_titled(page, name, title); self.pages[name] = icon
         side = Gtk.StackSidebar(stack=self.stack); side.set_size_request(210, -1)
@@ -239,6 +240,45 @@ class Settings(Adw.Application):
             have = check and shutil.which(check)
             b = Gtk.Button(label='Установлено' if have else 'Установить', sensitive=not have); b.connect('clicked', lambda _b, c=cmd: term(c))
             g.add(row(name, desc, b))
+
+    # ---- Snapshots
+    def p_snap(self, p):
+        g = group('Снимки системы', 'Автоматически: при загрузке, ежедневно, еженедельно и перед установкой программ. Из любого снимка можно загрузиться через меню загрузки.'); p.add(g)
+        if LIVE or sh('findmnt -no FSTYPE /') != 'btrfs':
+            g.add(row('Недоступно', 'Снимки работают на установленной Kora с файловой системой Btrfs')); return
+        bar = Gtk.Box(spacing=8)
+        b = Gtk.Button(label='Создать снимок'); b.add_css_class('suggested-action')
+        b.connect('clicked', lambda *_: (root('timeshift --create --comments "Вручную" --scripted'), GLib.timeout_add(6000, self.snap_fill)))
+        r = Gtk.Button(label='Обновить'); r.connect('clicked', lambda *_: self.snap_fill()); bar.append(b); bar.append(r); g.set_header_suffix(bar)
+        self.sg = g; self.srows = []; GLib.idle_add(self.snap_fill)
+    def snap_fill(self):
+        for r in self.srows: self.sg.remove(r)
+        self.srows = []
+        out = sh('sudo -n timeshift --list --scripted 2>/dev/null', 20)
+        snaps = [l.split() for l in out.splitlines() if re.match(r'^\s*\d+\s+>', l)]
+        if not snaps:
+            r = row('Список недоступен', 'Нажмите «Обновить» — может понадобиться пароль администратора'); b = Gtk.Button(label='Показать'); b.connect('clicked', lambda *_: term('sudo timeshift --list')); r.add_suffix(b)
+            self.sg.add(r); self.srows.append(r); return False
+        for f in reversed(snaps[-15:]):
+            name = f[2]; tags = f[3] if len(f) > 3 else ''; desc = ' '.join(f[4:]) if len(f) > 4 else ''
+            r = row(name.replace('_', ' '), (desc or {'B': 'при загрузке', 'D': 'ежедневный', 'W': 'еженедельный', 'O': 'вручную / перед установкой'}.get(tags, tags)))
+            b = Gtk.Button(label='Откатить'); b.add_css_class('destructive-action')
+            b.connect('clicked', lambda _b, n=name: term(f'echo "Откат системы к снимку {n}. Ваши файлы в папке пользователя не затрагиваются."; sudo timeshift --restore --snapshot "{n}" --scripted --yes && sudo reboot'))
+            r.add_suffix(b); self.sg.add(r); self.srows.append(r)
+        return False
+
+    # ---- Kora on a USB stick
+    def p_usb(self, p):
+        g = group('Kora на флешке', 'Носите свою систему с собой: файлы, настройки и программы сохраняются прямо на флешке'); p.add(g)
+        if not LIVE:
+            g.add(row('Доступно при запуске с флешки', 'Запишите образ Kora на флешку от 8 ГБ (лучше USB 3.0)')); return
+        on = bool(sh('blkid -L writable'))
+        if on:
+            g.add(row('Сохранение включено', 'Изменения записываются на флешку ' + sh('blkid -L writable')))
+        else:
+            b = Gtk.Button(label='Включить'); b.add_css_class('suggested-action')
+            b.connect('clicked', lambda *_: term('kora-persist'))
+            g.add(row('Сохранять изменения на флешке', 'Свободное место флешки станет хранилищем. После включения перезагрузите компьютер.', b))
 
     # ---- Doctor
     def p_doctor(self, p):

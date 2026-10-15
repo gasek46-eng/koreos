@@ -7,4 +7,5 @@ python3 - <<'P'
 import json; p='/etc/skel/.config/waybar/dock.json'; j=json.load(open(p))
 j['modules-center']=[m for m in j['modules-center'] if m!='image#install']; j.pop('image#install',None); json.dump(j,open(p,'w'),ensure_ascii=False,indent=1)
 P
+/usr/local/bin/kora-snapshots-setup || true
 dpkg -P casper 2>/dev/null; exit 0

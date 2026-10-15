@@ -14,7 +14,7 @@ R=$WORK/root; I=$WORK/iso
 PKGS=(
   # base, live, installer
   linux-generic casper systemd-sysv sudo dbus-user-session network-manager ca-certificates curl wget rfkill iw pciutils usbutils
-  calamares qt6-wayland rsync dosfstools grub-pc-bin grub-efi-amd64-bin grub2-common efibootmgr zram-tools
+  calamares qt6-wayland rsync gdisk parted btrfs-progs timeshift inotify-tools dosfstools grub-pc-bin grub-efi-amd64-bin grub2-common efibootmgr zram-tools
   plymouth plymouth-theme-spinner lightdm lightdm-gtk-greeter xserver-xorg-core xserver-xorg-input-libinput
   # desktop
   hyprland hyprlock hypridle xdg-desktop-portal-hyprland xdg-desktop-portal-gtk labwc xwayland
@@ -33,7 +33,7 @@ PKGS=(
   # language
   language-pack-ru language-pack-gnome-ru locales
 )
-OPTIONAL=(adw-gtk3 papers loupe evince eog)   # installed when available in the archive
+OPTIONAL=(grub-btrfs adw-gtk3 papers loupe evince eog)   # installed when available in the archive
 
 log() { echo -e "\n\033[1;35m==> $*\033[0m"; }
 mounts() { for d in dev dev/pts proc sys run; do mount --bind /$d $R/$d; done; }
@@ -96,7 +96,7 @@ umounts
 log "5/6 Squashfs"
 cp $(ls $R/boot/vmlinuz-* | tail -1) $I/casper/vmlinuz; cp $(ls $R/boot/initrd.img-* | tail -1) $I/casper/initrd
 mksquashfs $R $I/casper/filesystem.squashfs -comp zstd -Xcompression-level 19 -b 1M -noappend -quiet -wildcards -e 'proc/*' 'sys/*' 'dev/*' 'run/*' 'tmp/*'
-P="boot=casper noprompt noeject live-media=/dev/disk/by-label/KORA username=kora hostname=kora"
+P="boot=casper persistent noprompt noeject live-media=/dev/disk/by-label/KORA username=kora hostname=kora"
 cat > $I/boot/grub/grub.cfg <<G
 set timeout=2
 menuentry "Kora OS" { linux /casper/vmlinuz $P quiet splash loglevel=3

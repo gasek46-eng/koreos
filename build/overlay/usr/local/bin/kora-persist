@@ -1,0 +1,16 @@
+#!/bin/sh
+# Kora на флешке: creates a "writable" partition in the free space of the boot USB so the live system keeps files and settings.
+set -e
+[ "$(id -u)" = 0 ] || exec sudo "$0" "$@"
+SRC=$(findmnt -no SOURCE /cdrom 2>/dev/null || findmnt -no SOURCE /run/live/medium 2>/dev/null)
+[ -n "$SRC" ] || { echo "Kora запущена не с флешки."; exit 1; }
+DISK=/dev/$(lsblk -no PKNAME "$SRC" | head -1); [ "$DISK" != /dev/ ] || DISK=$SRC
+blkid -L writable >/dev/null 2>&1 && { echo "Сохранение уже включено."; exit 0; }
+sgdisk -e "$DISK" >/dev/null 2>&1 || true                       # move backup GPT to the end of the stick
+FREE=$(sgdisk -p "$DISK" | awk '/Total free space/{print int($5*$7)}' 2>/dev/null)
+sgdisk -n 0:0:0 -t 0:8300 -c 0:writable "$DISK" >/dev/null
+partprobe "$DISK" 2>/dev/null || partx -u "$DISK" 2>/dev/null || true; sleep 2
+P=$(lsblk -lnpo NAME,PARTLABEL "$DISK" | awk '$2=="writable"{print $1}' | tail -1)
+[ -b "$P" ] || { echo "Не удалось создать раздел."; exit 1; }
+mkfs.ext4 -q -F -L writable "$P"
+echo "Готово: изменения будут сохраняться на флешке ($P). Перезагрузите компьютер."
