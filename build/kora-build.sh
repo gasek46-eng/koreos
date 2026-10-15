@@ -51,6 +51,7 @@ deb http://security.ubuntu.com/ubuntu $SUITE-security main restricted universe m
 EOF
 rm -f $R/etc/apt/sources.list.d/*.sources 2>/dev/null || true
 echo 'Acquire::Retries "10";' > $R/etc/apt/apt.conf.d/80retries
+rm -f $R/etc/resolv.conf; cp -L /etc/resolv.conf $R/etc/resolv.conf   # DNS inside the chroot during the build
 mounts
 
 log "2/6 Packages"
@@ -90,6 +91,7 @@ chmod -x /etc/update-motd.d/* 2>/dev/null || true
 HOME=/etc/skel sh -c 'kora-theme night --noapply' || true
 update-initramfs -u -k all
 apt-get clean; rm -rf /var/lib/apt/lists/* /var/cache/apt/*.bin /tmp/*
+ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 C
 umounts
 
