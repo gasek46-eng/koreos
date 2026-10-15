@@ -1,5 +1,6 @@
 #!/bin/sh
-kora-theme "$(cat ~/.config/kora/theme 2>/dev/null || echo night)" --noapply
+# defaults come from /etc/skel; generate only on first run, never overwrite user settings
+[ -e ~/.config/kora/theme ] && [ -e ~/.config/waybar/style.css ] || kora-theme night --noapply
 swaybg -i ~/.config/kora/wallpaper -m fill &
 mako &
 kora-panel top & kora-panel dock &
