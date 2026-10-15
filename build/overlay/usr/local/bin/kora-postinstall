@@ -1,0 +1,10 @@
+#!/bin/sh
+# run by the installer inside the new system
+userdel -r kora 2>/dev/null
+rm -f /etc/sudoers.d/casper /etc/systemd/system/multi-user.target.wants/kora-live-pass.service
+sed -i '/^autologin/d' /etc/lightdm/lightdm.conf.d/50-kora.conf
+python3 - <<'P'
+import json; p='/etc/skel/.config/waybar/dock.json'; j=json.load(open(p))
+j['modules-center']=[m for m in j['modules-center'] if m!='image#install']; j.pop('image#install',None); json.dump(j,open(p,'w'),ensure_ascii=False,indent=1)
+P
+dpkg -P casper 2>/dev/null; exit 0

@@ -1,0 +1,15 @@
+#!/bin/sh
+n() { notify-send -i network-wireless "Wi-Fi" "$1"; }
+st=$(nmcli radio wifi)
+L=$(nmcli -t -f IN-USE,SSID,SIGNAL,SECURITY dev wifi list --rescan yes 2>/dev/null | awk -F: '$2!=""{printf "%s %s  %s%%%s\n",($1=="*"?"✔":"  "),$2,$3,($4!=""?"  🔒":"")}' | sort -u -k1,1r)
+T=$( [ "$st" = enabled ] && echo "⏻ Выключить Wi-Fi" || echo "⏻ Включить Wi-Fi")
+c=$(printf '%s\n%s\n⚙ Расширенные настройки' "$L" "$T" | sed '/^$/d' | wofi --dmenu -i -p "Wi-Fi") || exit 0
+case "$c" in
+*"Выключить Wi-Fi") nmcli radio wifi off; n "Выключен";; *"Включить Wi-Fi") nmcli radio wifi on; n "Включён";;
+*"Расширенные"*) nm-connection-editor;;
+*) s=$(echo "$c" | sed -E 's/^(✔|  ) //; s/  [0-9]+%.*$//')
+   if nmcli -t -f NAME con show | grep -qx "$s"; then nmcli con up id "$s" >/dev/null && n "Подключено: $s" || n "Не удалось: $s"
+   elif echo "$c" | grep -q 🔒; then p=$(wofi --dmenu --password -p "Пароль для $s" </dev/null) || exit 0
+        nmcli dev wifi connect "$s" password "$p" >/dev/null 2>&1 && n "Подключено: $s" || n "Неверный пароль или ошибка: $s"
+   else nmcli dev wifi connect "$s" >/dev/null 2>&1 && n "Подключено: $s" || n "Не удалось: $s"; fi;;
+esac

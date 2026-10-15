@@ -1,0 +1,7 @@
+---
+componentName: kora
+welcomeStyleCalamares: false
+strings: { productName: "Kora OS", shortProductName: Kora, version: "0.1", shortVersion: "0.1", versionedName: "Kora OS 0.1", shortVersionedName: "Kora 0.1", bootloaderEntryName: Kora }
+images: { productLogo: logo.png, productIcon: logo.png, productWelcome: logo.png }
+slideshow: [ slide.png ]
+style: { SidebarBackground: "#1e1e2e", SidebarText: "#ffffff", SidebarTextCurrent: "#22d3ee", SidebarBackgroundCurrent: "#2a2a3e" }

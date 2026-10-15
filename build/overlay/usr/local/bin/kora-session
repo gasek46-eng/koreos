@@ -1,0 +1,14 @@
+#!/bin/sh
+# Starts the Kora desktop: Hyprland when the GPU has acceleration, labwc otherwise (or if Hyprland fails)
+export GTK_CSD=1 QT_QPA_PLATFORM="wayland;xcb" MOZ_ENABLE_WAYLAND=1 XCURSOR_THEME=breeze_cursors XCURSOR_SIZE=24 _JAVA_AWT_WM_NONREPARENTING=1
+mkdir -p ~/.config/kora; M=$(cat ~/.config/kora/compositor 2>/dev/null || echo auto)
+if [ "$M" = auto ]; then M=labwc
+  grep -qw nomodeset /proc/cmdline || for c in /sys/class/drm/card[0-9]*; do
+    d=$(basename "$(readlink -f $c/device/driver 2>/dev/null)"); case $d in i915|xe|amdgpu|radeon|nouveau) M=hyprland;; esac; done
+fi
+if [ "$M" = hyprland ] && command -v Hyprland >/dev/null; then
+  export XDG_CURRENT_DESKTOP=Hyprland XDG_SESSION_DESKTOP=Hyprland; t=$(date +%s); Hyprland; rc=$?
+  [ $(( $(date +%s) - t )) -gt 20 ] && exit $rc   # normal logout; quick exit = crash -> fallback
+fi
+export XDG_CURRENT_DESKTOP=Kora:wlroots XDG_SESSION_DESKTOP=Kora WLR_RENDERER_ALLOW_SOFTWARE=1
+exec labwc

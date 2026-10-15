@@ -1,0 +1,3 @@
+#!/bin/sh
+command -v librewolf >/dev/null && exec librewolf "$@"
+exec epiphany-browser "$@"

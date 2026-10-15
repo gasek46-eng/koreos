@@ -1,0 +1,3 @@
+#!/bin/sh
+[ -e /cdrom/casper ] || { notify-send "Kora OS уже установлена"; exit; }
+exec sudo -E env QT_QPA_PLATFORM='wayland;xcb' calamares

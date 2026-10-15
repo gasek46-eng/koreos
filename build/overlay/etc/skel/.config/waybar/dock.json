@@ -1,0 +1,65 @@
+{
+ "position": "bottom",
+ "height": 64,
+ "margin-bottom": 8,
+ "name": "dock",
+ "exclusive": false,
+ "modules-center": [
+  "image#files",
+  "image#web",
+  "image#tor",
+  "image#tg",
+  "image#zoom",
+  "image#term",
+  "image#settings",
+  "image#install"
+ ],
+ "image#files": {
+  "path": "/usr/share/kora/icons/files.png",
+  "size": 44,
+  "on-click": "nautilus",
+  "tooltip": false
+ },
+ "image#web": {
+  "path": "/usr/share/kora/icons/web.png",
+  "size": 44,
+  "on-click": "kora-browser",
+  "tooltip": false
+ },
+ "image#tor": {
+  "path": "/usr/share/kora/icons/tor.png",
+  "size": 44,
+  "on-click": "torbrowser-launcher",
+  "tooltip": false
+ },
+ "image#tg": {
+  "path": "/usr/share/kora/icons/tg.png",
+  "size": 44,
+  "on-click": "kora-telegram",
+  "tooltip": false
+ },
+ "image#zoom": {
+  "path": "/usr/share/kora/icons/zoom.png",
+  "size": 44,
+  "on-click": "kora-zoom",
+  "tooltip": false
+ },
+ "image#term": {
+  "path": "/usr/share/kora/icons/term.png",
+  "size": 44,
+  "on-click": "foot",
+  "tooltip": false
+ },
+ "image#settings": {
+  "path": "/usr/share/kora/icons/settings.png",
+  "size": 44,
+  "on-click": "kora-settings",
+  "tooltip": false
+ },
+ "image#install": {
+  "path": "/usr/share/kora/icons/install.png",
+  "size": 44,
+  "on-click": "kora-install",
+  "tooltip": false
+ }
+}

@@ -1,0 +1,87 @@
+{
+ "position": "top",
+ "height": 28,
+ "spacing": 2,
+ "modules-left": [
+  "image#logo",
+  "hyprland/window"
+ ],
+ "modules-right": [
+  "tray",
+  "hyprland/language",
+  "network",
+  "pulseaudio",
+  "backlight",
+  "battery",
+  "custom/settings",
+  "custom/clock"
+ ],
+ "image#logo": {
+  "path": "/usr/share/kora/logo-36.png",
+  "size": 18,
+  "on-click": "wofi --show drun",
+  "tooltip": false
+ },
+ "hyprland/window": {
+  "max-length": 60,
+  "separate-outputs": true
+ },
+ "hyprland/language": {
+  "format-en": "EN",
+  "format-ru": "RU",
+  "on-click": "hyprctl switchxkblayout all next"
+ },
+ "tray": {
+  "spacing": 6
+ },
+ "network": {
+  "format-wifi": "󰖩 {essid}",
+  "format-ethernet": "󰈀 Сеть",
+  "format-disconnected": "󰖪 Нет сети",
+  "tooltip-format": "{ifname} {ipaddr}",
+  "on-click": "kora-settings wifi"
+ },
+ "pulseaudio": {
+  "format": "{icon} {volume}%",
+  "format-muted": "󰝟",
+  "format-icons": [
+   "󰕿",
+   "󰖀",
+   "󰕾"
+  ],
+  "on-click": "kora-settings sound",
+  "on-scroll-up": "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+",
+  "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+ },
+ "backlight": {
+  "format": "󰃠 {percent}%",
+  "on-click": "kora-settings display",
+  "on-scroll-up": "brightnessctl -q s +5%",
+  "on-scroll-down": "brightnessctl -q s 5%-",
+  "tooltip": false
+ },
+ "battery": {
+  "format": "{icon} {capacity}%",
+  "format-charging": "󰂄 {capacity}%",
+  "format-icons": [
+   "󰁺",
+   "󰁼",
+   "󰁾",
+   "󰂀",
+   "󰁹"
+  ],
+  "states": {
+   "warning": 20
+  }
+ },
+ "custom/settings": {
+  "format": "󰒓",
+  "tooltip": false,
+  "on-click": "kora-settings"
+ },
+ "custom/clock": {
+  "exec": "LC_TIME=ru_RU.UTF-8 date +'%a %d %b  %H:%M'",
+  "interval": 20,
+  "tooltip": false
+ }
+}

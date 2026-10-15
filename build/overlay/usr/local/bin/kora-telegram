@@ -1,0 +1,3 @@
+#!/bin/sh
+[ -x ~/.local/Telegram/Telegram ] && exec ~/.local/Telegram/Telegram
+foot -e sh -c 'mkdir -p ~/.local && wget -O- https://telegram.org/dl/desktop/linux | tar xJ -C ~/.local && ~/.local/Telegram/Telegram'

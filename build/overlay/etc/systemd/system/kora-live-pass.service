@@ -1,0 +1,10 @@
+[Unit]
+Description=Set Kora live user password
+ConditionKernelCommandLine=boot=casper
+Before=display-manager.service
+After=local-fs.target
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'id kora >/dev/null 2>&1 && echo kora:kora | chpasswd; usermod -aG video,input kora 2>/dev/null || true'
+[Install]
+WantedBy=multi-user.target

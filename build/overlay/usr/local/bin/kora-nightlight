@@ -1,0 +1,3 @@
+#!/bin/sh
+if pgrep -x wlsunset >/dev/null; then pkill -x wlsunset; rm -f ~/.config/kora/night; notify-send "Ночной режим" "Выключен"
+else setsid wlsunset -t 4000 -T 6500 -S 07:00 -s 20:00 >/dev/null 2>&1 & touch ~/.config/kora/night; notify-send "Ночной режим" "Включён: тёплый экран с 20:00 до 7:00"; fi

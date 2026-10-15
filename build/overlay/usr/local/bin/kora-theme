@@ -1,0 +1,86 @@
+#!/bin/sh
+# kora-theme <name> [--noapply] — applies a Kora theme to panels, apps, windows, terminal, wallpaper
+# themes: night ocean forest sunset graphite (dark) · day dawn mist (light)
+n=${1:-$(cat ~/.config/kora/theme 2>/dev/null || echo night)}
+case $n in
+night)    D=1; ACC=purple; BAR="22,20,40";  FG=eeeef6; TB=1c1a30; TERM=15142a; HL=7c5cff;;
+ocean)    D=1; ACC=blue;   BAR="8,36,64";   FG=e6f4ff; TB=0c2a48; TERM=08203a; HL=3aa0ff;;
+forest)   D=1; ACC=green;  BAR="14,40,30";  FG=e8f5ec; TB=14342a; TERM=0e261e; HL=46c37b;;
+sunset)   D=1; ACC=orange; BAR="60,22,48";  FG=fff0f2; TB=40182e; TERM=2c1220; HL=ff8a5c;;
+graphite) D=1; ACC=slate;  BAR="36,38,44";  FG=f0f0f2; TB=2a2c32; TERM=1e2024; HL=9aa3b5;;
+day)      D=0; ACC=blue;   BAR="248,249,253"; FG=1e1e2e; TB=f4f5f9; TERM=fafbfd; HL=3a7bff;;
+dawn)     D=0; ACC=pink;   BAR="253,247,245"; FG=2a1e22; TB=f9f1ef; TERM=fdf9f8; HL=e4628a;;
+mist)     D=0; ACC=teal;   BAR="244,250,252"; FG=1a2a30; TB=eef6f8; TERM=f8fcfd; HL=1aa3a3;;
+*) echo "unknown theme: $n"; exit 1;;
+esac
+C=~/.config; K=$C/kora; mkdir -p $K $C/gtk-3.0 $C/gtk-4.0 $C/foot $C/hypr $C/mako $C/wofi ~/.local/share/themes/Kora/openbox-3
+echo $n > $K/theme
+W=$(cat $K/custom-wallpaper 2>/dev/null); [ -f "$W" ] || W=/usr/share/kora/wallpapers/$n.jpg
+ln -sf "$W" $K/wallpaper
+BTN=$(cat $K/buttons 2>/dev/null || echo mac)
+if [ "$BTN" = mac ]; then LAYOUT="close,maximize:"; else LAYOUT=":maximize,close"; fi
+G=adw-gtk3; [ -d /usr/share/themes/adw-gtk3 ] || G=Adwaita; [ $D = 1 ] && G=$G-dark
+I=Papirus; [ $D = 1 ] && I=Papirus-Dark
+SCH=default; [ $D = 1 ] && SCH=prefer-dark
+A="rgba($BAR,.72)"; [ $D = 0 ] && A="rgba($BAR,.80)"
+
+# panels
+cat > $C/waybar/style.css <<CSS
+*{font-family:Inter,"Material Design Icons","Noto Sans",sans-serif;font-size:13px;color:#$FG;border:none;min-height:0}
+window#waybar{background:$A}
+window#waybar.dock{background:transparent}
+#language,#network,#pulseaudio,#backlight,#battery,#custom-settings,#custom-clock{padding:0 9px}
+#window{padding-left:10px;font-weight:600}
+.dock .modules-center{background:$A;border-radius:20px;padding:4px 8px;border:1px solid rgba(255,255,255,.12)}
+.dock image{padding:4px 7px 8px 7px;border-radius:14px;transition:all 160ms ease}
+.dock image:hover{padding:0 7px 12px 7px;background:rgba(127,127,127,.18)}
+tooltip{background:#$TB;border-radius:10px}
+CSS
+# apps (GTK3/GTK4/libadwaita)
+printf "[Settings]\ngtk-theme-name=$G\ngtk-application-prefer-dark-theme=$D\ngtk-icon-theme-name=$I\ngtk-cursor-theme-name=breeze_cursors\ngtk-cursor-theme-size=24\ngtk-font-name=Inter 10\ngtk-decoration-layout=$LAYOUT\n" | tee $C/gtk-3.0/settings.ini > $C/gtk-4.0/settings.ini
+if [ "$BTN" = mac ]; then CSS='windowcontrols button, headerbar button.titlebutton, .titlebar button.titlebutton{min-width:14px;min-height:14px;padding:0;margin:0 3px;border-radius:99px;box-shadow:none}
+windowcontrols button image, button.titlebutton image{opacity:0} windowcontrols button:hover image, button.titlebutton:hover image{opacity:.65}
+windowcontrols button.close, button.titlebutton.close{background:#ff5f57} windowcontrols button.maximize, button.titlebutton.maximize{background:#28c840} windowcontrols button.minimize, button.titlebutton.minimize{background:#febc2e}'
+else CSS='windowcontrols button, button.titlebutton{border-radius:6px;min-width:30px} windowcontrols button.close:hover, button.titlebutton.close:hover{background:#e81123;color:#fff}'; fi
+echo "$CSS" | tee $C/gtk-3.0/gtk.css > $C/gtk-4.0/gtk.css
+if command -v gsettings >/dev/null; then
+  gsettings set org.gnome.desktop.interface color-scheme $SCH 2>/dev/null; gsettings set org.gnome.desktop.interface gtk-theme $G 2>/dev/null
+  gsettings set org.gnome.desktop.interface icon-theme $I 2>/dev/null; gsettings set org.gnome.desktop.interface accent-color $ACC 2>/dev/null
+  gsettings set org.gnome.desktop.interface cursor-theme breeze_cursors 2>/dev/null; gsettings set org.gnome.desktop.wm.preferences button-layout "$LAYOUT" 2>/dev/null
+fi
+# terminal, notifications, launcher
+printf "[main]\nfont=monospace:size=11\npad=12x10\n[colors]\nalpha=0.94\nbackground=$TERM\nforeground=$FG\n" > $C/foot/foot.ini
+printf "font=Inter 11\nbackground-color=#${TB}ee\ntext-color=#$FG\nborder-color=#${HL}\nborder-size=1\nborder-radius=12\npadding=12\nmargin=12\ndefault-timeout=5000\n" > $C/mako/config
+cat > $C/wofi/style.css <<CSS
+window{background:rgba($BAR,.92);border-radius:16px;border:1px solid rgba(127,127,127,.25);font-family:Inter}
+#input{margin:10px;padding:8px 12px;border-radius:10px;border:none;background:rgba(127,127,127,.15);color:#$FG}
+#entry{padding:7px 12px;border-radius:10px} #entry:selected{background:#$HL} #text{color:#$FG} #entry:selected #text{color:#fff}
+CSS
+# window manager colors
+printf "general {\n  col.active_border = rgba(${HL}aa)\n  col.inactive_border = rgba(00000000)\n}\n" > $C/hypr/theme.conf
+printf "background {\n  path = $W\n  blur_passes = 3\n}\ninput-field {\n  size = 280, 48\n  rounding = 14\n  outer_color = rgba(${HL}ff)\n  inner_color = rgba(${TB}ee)\n  font_color = rgb($FG)\n  placeholder_text = Пароль\n  position = 0, -80\n}\nlabel {\n  text = \$TIME\n  font_size = 72\n  font_family = Inter\n  color = rgb($FG)\n  position = 0, 120\n  halign = center\n  valign = center\n}\n" > $C/hypr/hyprlock.conf
+cat > ~/.local/share/themes/Kora/openbox-3/themerc <<TH
+border.width: 1
+padding.height: 7
+window.label.text.justify: center
+window.active.border.color: #$TB
+window.inactive.border.color: #$TB
+window.active.title.bg.color: #$TB
+window.inactive.title.bg.color: #$TB
+window.active.label.text.color: #$FG
+window.inactive.label.text.color: #${FG}99
+window.active.button.unpressed.image.color: #$FG
+window.inactive.button.unpressed.image.color: #${FG}99
+menu.items.bg.color: #$TB
+menu.items.text.color: #$FG
+menu.items.active.bg.color: #$HL
+menu.items.active.text.color: #ffffff
+osd.bg.color: #$TB
+osd.label.text.color: #$FG
+TH
+[ "$2" = --noapply ] && exit 0
+pkill -x swaybg; setsid swaybg -i $K/wallpaper -m fill >/dev/null 2>&1 &
+makoctl reload 2>/dev/null
+[ -n "$HYPRLAND_INSTANCE_SIGNATURE" ] && hyprctl reload >/dev/null 2>&1 || labwc --reconfigure 2>/dev/null
+pkill -x waybar
+exit 0

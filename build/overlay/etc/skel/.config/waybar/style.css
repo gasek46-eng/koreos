@@ -1,0 +1,7 @@
+*{font-family:Inter,sans-serif;font-size:13px;color:#eeeeee}
+window#waybar{background:rgba(30,30,46,.78)}
+window#waybar.dock{background:transparent}
+.dock .modules-center{background:rgba(255,255,255,.15);border-radius:18px;padding:2px 8px;border:1px solid rgba(255,255,255,.18)}
+.dock image{padding:4px 8px 8px 8px;border-radius:12px;transition:all 150ms ease}
+.dock image:hover{padding:0 8px 12px 8px;background:rgba(255,255,255,.18)}
+#network,#pulseaudio,#battery,#backlight,#tray,#custom-settings{padding:0 8px}

@@ -1,0 +1,3 @@
+#!/bin/sh
+# keeps a Kora panel running (restarts after theme change or crash)
+while :; do waybar -c ~/.config/waybar/$1.json -s ~/.config/waybar/style.css >/dev/null 2>&1; sleep 0.5; done

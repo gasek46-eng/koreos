@@ -1,0 +1,4 @@
+#!/bin/sh
+D=$(xdg-user-dir PICTURES 2>/dev/null); [ -d "$D" ] || D=~/Изображения; mkdir -p "$D"; F="$D/Скриншот $(date '+%Y-%m-%d %H-%M-%S').png"
+if [ "$1" = area ]; then g=$(slurp) || exit 0; grim -g "$g" "$F"; else grim "$F"; fi
+wl-copy < "$F"; notify-send -i "$F" "Скриншот сохранён" "$(basename "$F") — и скопирован в буфер"

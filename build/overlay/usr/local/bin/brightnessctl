@@ -1,0 +1,4 @@
+#!/bin/sh
+case " $* " in *" -d "*|*" -l "*|*" --list "*) exec /usr/bin/brightnessctl "$@";; esac
+D=""; for t in raw firmware platform; do for d in /sys/class/backlight/*; do [ -e "$d/type" ] && [ "$(cat $d/type)" = $t ] && { D=$(basename $d); break 2; }; done; done
+[ -n "$D" ] && exec /usr/bin/brightnessctl -d "$D" "$@"; exec /usr/bin/brightnessctl "$@"

@@ -1,0 +1,9 @@
+#!/bin/sh
+kora-theme "$(cat ~/.config/kora/theme 2>/dev/null || echo night)" --noapply
+swaybg -i ~/.config/kora/wallpaper -m fill &
+mako &
+kora-panel top & kora-panel dock &
+[ -e ~/.config/kora/night ] && wlsunset -t 4000 -T 6500 -S 07:00 -s 20:00 &
+if ! grep -qw boot=casper /proc/cmdline; then
+  if [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then hypridle & else swayidle -w timeout 300 kora-lock before-sleep kora-lock & fi
+fi
